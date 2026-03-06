@@ -8,7 +8,7 @@ export async function POST(req: Request) {
   const { messages } = await req.json();
 
   // Fetch live categories from Google Sheets
-  let categories: Record<string, { max: number; registered: number; available: boolean }> = {};
+  let categories: Record<string, { name: string; max: number; registered: number; available: boolean; memberPrice: number; price: number }> = {};
   try {
     categories = await getAllAvailability();
   } catch (e) {
