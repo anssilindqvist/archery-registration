@@ -5,12 +5,6 @@ import type { ChatMessage } from "@/types";
 export default function MessageBubble({ message }: { message: ChatMessage }) {
   const isUser = message.role === "user";
 
-  // Hide the completion markers from display
-  const displayContent = message.content
-    .replace("[REGISTRATION_COMPLETE]", "")
-    .replace("[WAITLIST_COMPLETE]", "")
-    .trim();
-
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
       <div
@@ -20,7 +14,7 @@ export default function MessageBubble({ message }: { message: ChatMessage }) {
             : "bg-green-800/50 text-emerald-50 rounded-bl-sm"
         }`}
       >
-        {displayContent}
+        {message.content}
       </div>
     </div>
   );

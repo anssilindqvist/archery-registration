@@ -5,11 +5,15 @@ import type { ChatMessage } from "@/types";
 import MessageBubble from "./MessageBubble";
 import TypingIndicator from "./TypingIndicator";
 
+function stripMarkers(text: string): string {
+  return text.replace("[REGISTRATION_COMPLETE]", "").replace("[WAITLIST_COMPLETE]", "").trim();
+}
+
 export default function ChatWindow() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+  const submittedRef = useRef(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -34,25 +38,22 @@ export default function ChatWindow() {
       });
       const data = await res.json();
       if (data.reply) {
+        const rawReply = data.reply;
+        const cleanReply = stripMarkers(rawReply);
+
         const assistantMsg: ChatMessage = {
           role: "assistant",
-          content: data.reply,
+          content: cleanReply,
         };
         const updated = [...chatMessages, assistantMsg];
         setMessages(updated);
 
         // Check for registration completion
-        if (
-          data.reply.includes("[REGISTRATION_COMPLETE]") &&
-          !submitted
-        ) {
-          setSubmitted(true);
+        if (rawReply.includes("[REGISTRATION_COMPLETE]") && !submittedRef.current) {
+          submittedRef.current = true;
           extractAndSubmit(updated, false);
-        } else if (
-          data.reply.includes("[WAITLIST_COMPLETE]") &&
-          !submitted
-        ) {
-          setSubmitted(true);
+        } else if (rawReply.includes("[WAITLIST_COMPLETE]") && !submittedRef.current) {
+          submittedRef.current = true;
           extractAndSubmit(updated, true);
         }
       }
@@ -73,7 +74,6 @@ export default function ChatWindow() {
     chatMessages: ChatMessage[],
     isWaitlist: boolean
   ) {
-    // Ask Claude to extract the structured data
     try {
       const extractRes = await fetch("/api/chat", {
         method: "POST",
@@ -83,27 +83,42 @@ export default function ChatWindow() {
             ...chatMessages,
             {
               role: "user",
-              content: `Pura ilmoittautumistiedot JSON-muodossa. Vastaa VAIN JSON:lla, ei muuta tekstiä. Muoto: {"name": "...", "age": "...", "club": "...", "category": "...", "email": "..."${isWaitlist ? ', "preferredCategory": "..."' : ""}}`,
+              content: `Pura ilmoittautumistiedot JSON-muodossa. Vastaa VAIN JSON:lla, ei muuta tekstiä. Käytä luokan koodia (esim. AMLB). Muoto: {"name": "...", "age": "...", "club": "...", "category": "...", "email": "..."${isWaitlist ? ', "preferredCategory": "..."' : ""}}`,
             },
           ],
         }),
       });
       const extractData = await extractRes.json();
       const jsonMatch = extractData.reply?.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        const fields = JSON.parse(jsonMatch[0]);
-        await fetch("/api/submit", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            ...fields,
-            waitlist: isWaitlist,
-          }),
-        });
+      if (!jsonMatch) {
+        console.error("Failed to extract JSON from reply");
+        return;
       }
-    } catch {
-      // Submission error is non-blocking for the user experience
-      console.error("Failed to extract/submit registration");
+      const fields = JSON.parse(jsonMatch[0]);
+      const submitRes = await fetch("/api/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...fields,
+          waitlist: isWaitlist,
+        }),
+      });
+
+      if (!submitRes.ok) {
+        const err = await submitRes.json();
+        console.error("Submit failed:", err);
+        if (err.error === "full") {
+          setMessages((prev) => [
+            ...prev,
+            {
+              role: "assistant",
+              content: `Valitettavasti luokka ${err.category} on juuri täyttynyt. Aloita uusi keskustelu yrittääksesi uudelleen.`,
+            },
+          ]);
+        }
+      }
+    } catch (e) {
+      console.error("Failed to extract/submit registration:", e);
     }
   }
 

@@ -45,7 +45,7 @@ export async function POST(req: Request) {
     const error = await response.text();
     console.error("Anthropic API error:", response.status, error);
     return NextResponse.json(
-      { error: "Anthropic API error", details: error },
+      { error: "Anthropic API error" },
       { status: response.status }
     );
   }
