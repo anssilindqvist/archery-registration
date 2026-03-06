@@ -11,8 +11,13 @@ export async function POST(req: Request) {
   let categories: Record<string, { name: string; max: number; registered: number; available: boolean; memberPrice: number; price: number }> = {};
   try {
     categories = await getAllAvailability();
-  } catch (e) {
-    console.error("Failed to fetch availability:", e);
+  } catch (e: unknown) {
+    const err = e as { message?: string; code?: string; errors?: unknown[] };
+    console.error("Failed to fetch availability:", {
+      message: err.message,
+      code: err.code,
+      errors: err.errors,
+    });
   }
 
   const fullSystemPrompt = buildSystemPrompt(categories);

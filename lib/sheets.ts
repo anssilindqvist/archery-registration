@@ -1,12 +1,29 @@
 import { google } from "googleapis";
 import type { Registration } from "@/types";
 
-const auth = new google.auth.JWT({
-  email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-  key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
-  scopes: ["https://www.googleapis.com/auth/spreadsheets"],
-});
+function getAuth() {
+  const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
+  const key = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, "\n");
+  const sheetId = process.env.GOOGLE_SHEET_ID;
 
+  console.log("[Sheets] Config check:", {
+    hasEmail: !!email,
+    emailPrefix: email?.substring(0, 10),
+    hasKey: !!key,
+    keyLength: key?.length,
+    keyStart: key?.substring(0, 30),
+    hasSheetId: !!sheetId,
+    sheetId: sheetId?.substring(0, 10),
+  });
+
+  return new google.auth.JWT({
+    email,
+    key,
+    scopes: ["https://www.googleapis.com/auth/spreadsheets"],
+  });
+}
+
+const auth = getAuth();
 const sheets = google.sheets({ version: "v4", auth });
 
 export async function checkAvailability(

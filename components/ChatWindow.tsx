@@ -165,7 +165,7 @@ export default function ChatWindow() {
             onKeyDown={(e) => e.key === "Enter" && handleSend()}
             placeholder="Kirjoita viesti..."
             disabled={loading}
-            className="flex-1 bg-green-800/50 text-emerald-50 placeholder-emerald-600 rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-emerald-500/50 disabled:opacity-50"
+            className="flex-1 bg-green-800/50 text-emerald-50 placeholder-emerald-600 rounded-lg px-4 py-3 text-lg outline-none focus:ring-2 focus:ring-emerald-500/50 disabled:opacity-50"
           />
           <button
             onClick={handleSend}
