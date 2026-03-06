@@ -83,7 +83,9 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "full", category: body.category }, { status: 409 });
   }
 
-  const isMember = body.club.toLowerCase().includes(MEMBER_CLUB.toLowerCase());
+  const clubLower = body.club.toLowerCase();
+  const isMember = clubLower.includes("järvenpä") || clubLower.includes("jja") || clubLower.includes(MEMBER_CLUB.toLowerCase());
+  console.log("[Submit] Club matching:", { club: body.club, isMember, memberPrice: catInfo.memberPrice, price: catInfo.price });
   const price = isMember ? catInfo.memberPrice : catInfo.price;
 
   await appendRegistration({
