@@ -14,28 +14,33 @@ export async function checkAvailability(
 ): Promise<boolean> {
   const res = await sheets.spreadsheets.values.get({
     spreadsheetId: process.env.GOOGLE_SHEET_ID,
-    range: "Seats!A:C",
+    range: "Seats!A:D",
   });
   const row = res.data.values?.find((r) => r[0] === category);
   if (!row) return false;
-  return parseInt(row[2]) < parseInt(row[1]);
+  // Columns: A=Code, B=Name, C=Max, D=Registered
+  return parseInt(row[3]) < parseInt(row[2]);
 }
 
 export async function getAllAvailability(): Promise<
-  Record<string, { max: number; registered: number; available: boolean }>
+  Record<string, { name: string; max: number; registered: number; available: boolean; memberPrice: number; price: number }>
 > {
   const res = await sheets.spreadsheets.values.get({
     spreadsheetId: process.env.GOOGLE_SHEET_ID,
-    range: "Seats!A:C",
+    range: "Seats!A:F",
   });
   const result: Record<
     string,
-    { max: number; registered: number; available: boolean }
+    { name: string; max: number; registered: number; available: boolean; memberPrice: number; price: number }
   > = {};
+  // Columns: A=Code, B=Name, C=Max, D=Registered, E=Member Price, F=Price
   for (const row of res.data.values?.slice(1) ?? []) {
-    const max = parseInt(row[1]) || 0;
-    const registered = parseInt(row[2]) || 0;
-    result[row[0]] = { max, registered, available: registered < max };
+    const name = row[1] || row[0];
+    const max = parseInt(row[2]) || 0;
+    const registered = parseInt(row[3]) || 0;
+    const memberPrice = parseInt(row[4]) || 0;
+    const price = parseInt(row[5]) || 0;
+    result[row[0]] = { name, max, registered, available: registered < max, memberPrice, price };
   }
   return result;
 }
@@ -43,17 +48,18 @@ export async function getAllAvailability(): Promise<
 export async function appendRegistration(data: Registration): Promise<void> {
   await sheets.spreadsheets.values.append({
     spreadsheetId: process.env.GOOGLE_SHEET_ID,
-    range: "Registrations!A:F",
+    range: "Registrations!A:G",
     valueInputOption: "USER_ENTERED",
     requestBody: {
       values: [
         [
           new Date().toISOString(),
           data.name,
-          data.birthYear,
+          data.age,
           data.club,
           data.category,
           data.email,
+          data.price,
         ],
       ],
     },

@@ -1,11 +1,20 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 
 export default function LandingHero() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-950 via-green-900 to-emerald-950 flex flex-col items-center justify-center text-white px-4">
       <div className="max-w-2xl text-center space-y-8">
+        <Image
+          src="/seuralogo.gif"
+          alt="Järvenpään Jousiampujat"
+          width={150}
+          height={150}
+          className="mx-auto"
+          priority
+        />
         <div className="space-y-2">
           <p className="text-emerald-300 text-lg font-medium tracking-wide uppercase">
             Järvenpään Jousiampujat

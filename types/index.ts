@@ -5,10 +5,11 @@ export interface ChatMessage {
 
 export interface Registration {
   name: string;
-  birthYear: string;
+  age: string;
   club: string;
   category: string;
   email: string;
+  price: number;
 }
 
 export interface SubmitRequest extends Registration {

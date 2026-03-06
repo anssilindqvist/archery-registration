@@ -11,9 +11,11 @@ export default function ChatWindow() {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    inputRef.current?.focus();
   }, [messages, loading]);
 
   // Auto-start conversation
@@ -81,7 +83,7 @@ export default function ChatWindow() {
             ...chatMessages,
             {
               role: "user",
-              content: `Pura ilmoittautumistiedot JSON-muodossa. Vastaa VAIN JSON:lla, ei muuta tekstiä. Muoto: {"name": "...", "birthYear": "...", "club": "...", "category": "...", "email": "..."${isWaitlist ? ', "preferredCategory": "..."' : ""}}`,
+              content: `Pura ilmoittautumistiedot JSON-muodossa. Vastaa VAIN JSON:lla, ei muuta tekstiä. Muoto: {"name": "...", "age": "...", "club": "...", "category": "...", "email": "..."${isWaitlist ? ', "preferredCategory": "..."' : ""}}`,
             },
           ],
         }),
@@ -141,6 +143,7 @@ export default function ChatWindow() {
       <div className="bg-green-900/60 border-t border-emerald-800/50 px-4 py-3">
         <div className="flex gap-2 max-w-3xl mx-auto">
           <input
+            ref={inputRef}
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
