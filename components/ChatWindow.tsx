@@ -134,7 +134,7 @@ export default function ChatWindow() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-gradient-to-b from-green-950 to-emerald-950">
+    <div className="flex flex-col h-dvh bg-gradient-to-b from-green-950 to-emerald-950">
       {/* Header */}
       <div className="bg-green-900/80 border-b border-emerald-800/50 px-4 py-3">
         <h1 className="text-emerald-100 font-semibold text-center">
