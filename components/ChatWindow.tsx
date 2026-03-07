@@ -83,7 +83,7 @@ export default function ChatWindow() {
             ...chatMessages,
             {
               role: "user",
-              content: `Pura ilmoittautumistiedot JSON-muodossa. Vastaa VAIN JSON:lla, ei muuta tekstiä. Käytä luokan koodia (esim. AMLB). Muoto: {"name": "...", "age": "...", "club": "...", "category": "...", "email": "..."${isWaitlist ? ', "preferredCategory": "..."' : ""}}`,
+              content: `Pura ilmoittautumistiedot JSON-muodossa. Vastaa VAIN JSON:lla, ei muuta tekstiä. Käytä luokan koodia (esim. AMLB). Jos ikää ei kerrottu, käytä "ei ilmoitettu". Jos Sportti-ID:tä ei kysytty tai annettu, käytä tyhjää "". Muoto: {"name": "...", "age": "...", "club": "...", "license": "Superlisenssi|FFAA Lisenssi|Ei lisenssiä", "sporttiId": "...", "category": "...", "email": "..."${isWaitlist ? ', "preferredCategory": "..."' : ""}}`,
             },
           ],
         }),

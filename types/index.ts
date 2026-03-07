@@ -7,6 +7,8 @@ export interface Registration {
   name: string;
   age: string;
   club: string;
+  license: string;
+  sporttiId: string;
   category: string;
   email: string;
   price: number;

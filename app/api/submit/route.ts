@@ -17,7 +17,8 @@ function canSendEmail(): boolean {
 }
 
 function validateBody(body: unknown): { valid: true; data: {
-  name: string; age: string; club: string; category: string; email: string;
+  name: string; age: string; club: string; license: string; sporttiId: string;
+  category: string; email: string;
   waitlist?: boolean; preferredCategory?: string;
 }} | { valid: false; error: string } {
   if (!body || typeof body !== "object") return { valid: false, error: "Invalid body" };
@@ -26,6 +27,8 @@ function validateBody(body: unknown): { valid: true; data: {
   const name = typeof b.name === "string" ? b.name.trim() : "";
   const age = typeof b.age === "string" ? b.age.trim() : "";
   const club = typeof b.club === "string" ? b.club.trim() : "";
+  const license = typeof b.license === "string" ? b.license.trim() : "";
+  const sporttiId = typeof b.sporttiId === "string" ? b.sporttiId.trim() : "";
   const category = typeof b.category === "string" ? b.category.trim() : "";
   const email = typeof b.email === "string" ? b.email.trim() : "";
   const waitlist = typeof b.waitlist === "boolean" ? b.waitlist : false;
@@ -34,10 +37,11 @@ function validateBody(body: unknown): { valid: true; data: {
   if (!name || name.length > 100) return { valid: false, error: "Invalid name" };
   if (!age || age.length > 10) return { valid: false, error: "Invalid age" };
   if (!club || club.length > 100) return { valid: false, error: "Invalid club" };
+  if (!license) return { valid: false, error: "Invalid license" };
   if (!category || category.length > 20) return { valid: false, error: "Invalid category" };
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { valid: false, error: "Invalid email" };
 
-  return { valid: true, data: { name, age, club, category, email, waitlist, preferredCategory } };
+  return { valid: true, data: { name, age, club, license, sporttiId, category, email, waitlist, preferredCategory } };
 }
 
 export async function POST(req: Request) {
@@ -92,6 +96,8 @@ export async function POST(req: Request) {
     name: body.name,
     age: body.age,
     club: body.club,
+    license: body.license,
+    sporttiId: body.sporttiId,
     category: body.category,
     email: body.email,
     price,
@@ -109,6 +115,7 @@ export async function POST(req: Request) {
   <tr><td style="padding:4px 12px 4px 0;font-weight:bold;">Nimi:</td><td>${esc(body.name)}</td></tr>
   <tr><td style="padding:4px 12px 4px 0;font-weight:bold;">Ikä:</td><td>${esc(body.age)}</td></tr>
   <tr><td style="padding:4px 12px 4px 0;font-weight:bold;">Seura:</td><td>${esc(body.club)}</td></tr>
+  <tr><td style="padding:4px 12px 4px 0;font-weight:bold;">Lisenssi:</td><td>${esc(body.license)}${body.sporttiId ? ` (Sportti-ID: ${esc(body.sporttiId)})` : ""}</td></tr>
   <tr><td style="padding:4px 12px 4px 0;font-weight:bold;">Luokka:</td><td>${esc(body.category)}</td></tr>
   <tr><td style="padding:4px 12px 4px 0;font-weight:bold;">Hinta:</td><td>${price} €</td></tr>
 </table>
@@ -134,7 +141,7 @@ export async function POST(req: Request) {
       from: process.env.FROM_EMAIL!,
       to: process.env.ORGANIZER_EMAIL!,
       subject: `Uusi ilmoittautuminen: ${esc(body.name)} - ${esc(body.category)}`,
-      html: `<p>Nimi: ${esc(body.name)}<br>Ikä: ${esc(body.age)}<br>Seura: ${esc(body.club)}<br>Luokka: ${esc(body.category)}<br>Hinta: ${price} €<br>Email: ${esc(body.email)}</p>`,
+      html: `<p>Nimi: ${esc(body.name)}<br>Ikä: ${esc(body.age)}<br>Seura: ${esc(body.club)}<br>Lisenssi: ${esc(body.license)}${body.sporttiId ? ` (Sportti-ID: ${esc(body.sporttiId)})` : ""}<br>Luokka: ${esc(body.category)}<br>Hinta: ${price} €<br>Email: ${esc(body.email)}</p>`,
     });
   }
 

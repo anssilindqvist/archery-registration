@@ -65,7 +65,7 @@ export async function getAllAvailability(): Promise<
 export async function appendRegistration(data: Registration): Promise<void> {
   await sheets.spreadsheets.values.append({
     spreadsheetId: process.env.GOOGLE_SHEET_ID,
-    range: "Registrations!A:G",
+    range: "Registrations!A:I",
     valueInputOption: "USER_ENTERED",
     requestBody: {
       values: [
@@ -74,6 +74,8 @@ export async function appendRegistration(data: Registration): Promise<void> {
           data.name,
           data.age,
           data.club,
+          data.license,
+          data.sporttiId,
           data.category,
           data.email,
           data.price,
