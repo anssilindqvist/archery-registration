@@ -91,23 +91,23 @@ export default function LandingHero() {
             <table className="w-full text-left text-emerald-100">
               <tbody>
                 <tr className="border-b border-emerald-800/30">
-                  <td className="py-2 pr-4 font-medium text-emerald-300">09:00</td>
+                  <td className="py-2 pr-4 font-medium text-emerald-300">09:30</td>
                   <td className="py-2">Ilmoittautuminen ja sisäänkirjaus</td>
                 </tr>
                 <tr className="border-b border-emerald-800/30">
                   <td className="py-2 pr-4 font-medium text-emerald-300">10:00</td>
-                  <td className="py-2">Kilpailu alkaa</td>
+                  <td className="py-2">Harjoitusammunta</td>
+                </tr>
+                <tr className="border-b border-emerald-800/30">
+                  <td className="py-2 pr-4 font-medium text-emerald-300">10:30</td>
+                  <td className="py-2">Kilpailu alkaa. 2 lämmittelykierrosta.</td>
                 </tr>
                 <tr className="border-b border-emerald-800/30">
                   <td className="py-2 pr-4 font-medium text-emerald-300">12:00</td>
                   <td className="py-2">Lounastauko</td>
                 </tr>
-                <tr className="border-b border-emerald-800/30">
-                  <td className="py-2 pr-4 font-medium text-emerald-300">13:00</td>
-                  <td className="py-2">Kilpailu jatkuu</td>
-                </tr>
                 <tr>
-                  <td className="py-2 pr-4 font-medium text-emerald-300">15:00</td>
+                  <td className="py-2 pr-4 font-medium text-emerald-300">14:00</td>
                   <td className="py-2">Palkintojenjako</td>
                 </tr>
               </tbody>
