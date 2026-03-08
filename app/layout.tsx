@@ -5,6 +5,10 @@ export const metadata: Metadata = {
   title: "Kevät Flint 26 - Ilmoittautuminen",
   description:
     "Ilmoittaudu Järvenpään Jousiampujien Kevät Flint 26 -kilpailuun",
+  icons: {
+    icon: "/favicon.png",
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export default function RootLayout({
