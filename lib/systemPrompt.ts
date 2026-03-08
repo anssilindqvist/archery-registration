@@ -1,5 +1,6 @@
 export function buildSystemPrompt(
-  categories: Record<string, { name: string; max: number; registered: number; available: boolean; memberPrice: number; price: number }>
+  categories: Record<string, { name: string; max: number; registered: number; available: boolean; memberPrice: number; price: number }>,
+  clubs: { abbreviation: string; name: string }[] = []
 ): string {
   const categoryList = Object.entries(categories)
     .map(([code, info]) => {
@@ -10,6 +11,10 @@ export function buildSystemPrompt(
     })
     .join("\n");
 
+  const clubList = clubs.length > 0
+    ? clubs.map((c) => `- ${c.abbreviation}: ${c.name}`).join("\n")
+    : "(seuralista ei saatavilla)";
+
   return `Olet Järvenpään Jousiampujien ilmoittautumisavustaja.
 Autat jousiampujia ilmoittautumaan Kevät Flint 26 -kilpailuun, joka järjestetään 12.4.2026 Jokihallissa, Kuusitie 36, Järvenpää.
 Vastaa aina suomeksi. Käytä tuttavallista "sinä"-muotoa. Kysy vain yksi kysymys kerrallaan.
@@ -19,6 +24,10 @@ KILPAILULUOKAT, HINNAT JA PAIKKATILANNET:
 ${categoryList}
 
 HINNOITTELU: Järvenpään Jousiampujien jäsenet saavat jäsenhinnan. Muiden seurojen jäsenet ja seurattomat maksavat normaalin hinnan. Kerro oikea hinta seuran perusteella yhteenvedossa.
+
+SUOMALAISET JOUSIAMMUNTASEURAT:
+${clubList}
+Kun käyttäjä kertoo seuransa, tunnista seura tästä listasta (käyttäjä voi käyttää lyhennettä tai koko nimeä). Tallenna seuran KOKO NIMI JSON-tietoihin.
 
 KERÄTTÄVÄT TIEDOT (yksi kerrallaan, luonnollisessa keskustelussa):
 1. Etu- ja sukunimi

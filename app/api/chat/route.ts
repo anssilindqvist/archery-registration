@@ -1,26 +1,27 @@
 import { NextResponse } from "next/server";
 import { buildSystemPrompt } from "@/lib/systemPrompt";
-import { getAllAvailability } from "@/lib/sheets";
+import { getAllAvailability, getClubs } from "@/lib/sheets";
 
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
   const { messages } = await req.json();
 
-  // Fetch live categories from Google Sheets
+  // Fetch live categories and clubs from Google Sheets
   let categories: Record<string, { name: string; max: number; registered: number; available: boolean; memberPrice: number; price: number }> = {};
+  let clubs: { abbreviation: string; name: string }[] = [];
   try {
-    categories = await getAllAvailability();
+    [categories, clubs] = await Promise.all([getAllAvailability(), getClubs()]);
   } catch (e: unknown) {
     const err = e as { message?: string; code?: string; errors?: unknown[] };
-    console.error("Failed to fetch availability:", {
+    console.error("Failed to fetch from Sheets:", {
       message: err.message,
       code: err.code,
       errors: err.errors,
     });
   }
 
-  const fullSystemPrompt = buildSystemPrompt(categories);
+  const fullSystemPrompt = buildSystemPrompt(categories, clubs);
 
   // Anthropic requires at least one message; for the initial greeting, send a starter prompt
   const apiMessages =

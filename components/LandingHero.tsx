@@ -2,8 +2,24 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
+
+// Registration opens 16.3.2026 at 18:00 Finnish time (EET = UTC+2, EEST = UTC+3)
+const REGISTRATION_OPENS = new Date("2026-03-16T18:00:00+02:00");
 
 export default function LandingHero() {
+  const searchParams = useSearchParams();
+  const testing = searchParams.get("testing") === "antero";
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsOpen(testing || new Date() >= REGISTRATION_OPENS);
+    check();
+    const interval = setInterval(check, 1000);
+    return () => clearInterval(interval);
+  }, [testing]);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-950 via-green-900 to-emerald-950 text-white">
       <div className="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-screen">
@@ -37,12 +53,18 @@ export default function LandingHero() {
             kanssa.
           </p>
 
-          <Link
-            href="/register"
-            className="inline-block bg-emerald-500 hover:bg-emerald-400 text-green-950 font-bold text-lg px-10 py-4 rounded-lg transition-colors shadow-lg shadow-emerald-500/20"
-          >
-            Ilmoittaudu
-          </Link>
+          {isOpen ? (
+            <Link
+              href="/register"
+              className="inline-block bg-emerald-500 hover:bg-emerald-400 text-green-950 font-bold text-lg px-10 py-4 rounded-lg transition-colors shadow-lg shadow-emerald-500/20"
+            >
+              Ilmoittaudu
+            </Link>
+          ) : (
+            <span className="inline-block bg-gray-600 text-gray-300 font-bold text-lg px-10 py-4 rounded-lg cursor-not-allowed">
+              Ilmoittautuminen avautuu 16.3. klo 18
+            </span>
+          )}
         </div>
 
         {/* Right column — map & schedule */}

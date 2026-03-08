@@ -62,6 +62,18 @@ export async function getAllAvailability(): Promise<
   return result;
 }
 
+export async function getClubs(): Promise<{ abbreviation: string; name: string }[]> {
+  const res = await sheets.spreadsheets.values.get({
+    spreadsheetId: process.env.GOOGLE_SHEET_ID,
+    range: "Clubs!A:B",
+  });
+  // Columns: A=Abbreviation, B=Full Name
+  return (res.data.values?.slice(1) ?? []).map((row) => ({
+    abbreviation: row[0] || "",
+    name: row[1] || row[0] || "",
+  }));
+}
+
 export async function appendRegistration(data: Registration): Promise<void> {
   await sheets.spreadsheets.values.append({
     spreadsheetId: process.env.GOOGLE_SHEET_ID,
