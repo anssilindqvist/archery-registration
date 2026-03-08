@@ -113,6 +113,20 @@ export default function LandingHero() {
               </tbody>
             </table>
           </div>
+
+          {/* Competition info */}
+          <div className="bg-green-800/40 rounded-xl p-6 border border-emerald-800/50 space-y-3 text-emerald-100">
+            <div>
+              <h3 className="font-bold text-emerald-200 mb-1">Kilpailumaksu</h3>
+              <ul className="space-y-0.5">
+                <li>Juniorit 15 €</li>
+                <li>Aikuiset 30 €</li>
+                <li>JJA:n jäsenet 20 €</li>
+              </ul>
+            </div>
+            <p>Paikalla on kevyt buffet, saatavilla pikkupurtavaa.</p>
+            <p>Kilpailussa käytetään sisäkenkiä.</p>
+          </div>
         </div>
       </div>
     </div>
